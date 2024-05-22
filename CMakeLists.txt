@@ -26,12 +26,12 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 # Conan
 
-# message( "CMAKE_BINARY_DIR : " ${CMAKE_BINARY_DIR} )
-# include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+message( "CMAKE_BINARY_DIR : " ${CMAKE_BINARY_DIR} )
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 
-# conan_basic_setup(TARGETS)
+conan_basic_setup(TARGETS)
 
-include_directories("include")
+include_directories(${CONAN_INCLUDE_DIRS} "include")
 # ${CONAN_INCLUDE_DIRS} 
 
 # add source files
@@ -49,4 +49,4 @@ install(DIRECTORY include/ DESTINATION include
         FILES_MATCHING PATTERN "*.h")
 
 # add tests
-# add_subdirectory(test)
+add_subdirectory(test)
