@@ -24,14 +24,14 @@ namespace pcl_practicing {
         std::cout << "load scene Point Cloud from file.\n";
         
         pcl::io::loadPCDFile(file_path, *scene_before_downsampling);
-        PCL_INFO("Scene cloud has %d points\n", (int)scene_before_downsampling->points.size());
+        PCL_INFO("Scene cloud has %d points\n", static_cast<int>(scene_before_downsampling->points.size()));
     }
 
     void AlignmentPrerejective::loadObjectPointCloud(const std::string& file_path) {
         std::cout << "load object Point Cloud from file.\n";
 
         pcl::io::loadPCDFile(file_path, *object_cloud);
-        PCL_INFO("object cloud has %d points\n", (int)object_cloud->points.size());
+        PCL_INFO("object cloud has %d points\n", static_cast<int>(object_cloud->points.size()));
     }
     void AlignmentPrerejective::downsample() {
         pcl::console::print_highlight ("Downsampling...\n");
@@ -42,13 +42,13 @@ namespace pcl_practicing {
         grid.setInputCloud (object_cloud);
         grid.filter (*object_cloud);
 
-        PCL_INFO("object cloud has %d points after down sampling\n", (int)object_cloud->points.size());
+        PCL_INFO("object cloud has %d points after down sampling\n", static_cast<int>(object_cloud->points.size()));
 
         // downsample scene
         grid.setInputCloud (scene_before_downsampling);
         grid.filter (*scene_cloud);
 
-        PCL_INFO("Scene cloud has %d points after down sampling\n", (int)scene_cloud->points.size());
+        PCL_INFO("Scene cloud has %d points after down sampling\n", static_cast<int>(scene_cloud->points.size()));
 
     }
     void AlignmentPrerejective::estimateNormals() {
@@ -59,14 +59,14 @@ namespace pcl_practicing {
         nest.setSearchSurface(scene_before_downsampling);
         nest.compute(*scene_normals);
 
-        PCL_INFO("Scene normals cloud has %d points\n", (int)scene_normals->points.size());
+        PCL_INFO("Scene normals cloud has %d points\n", static_cast<int>(scene_normals->points.size()));
 
         // estimate normals for object cloud
         nest.setInputCloud(object_cloud);
         nest.setSearchSurface(object_cloud);
         nest.compute(*object_normals);
 
-        PCL_INFO("Object normals cloud has %d points\n", (int)object_normals->points.size());
+        PCL_INFO("Object normals cloud has %d points\n", static_cast<int>(object_normals->points.size()));
     }
     void AlignmentPrerejective::estimateFeatures() {
         FeatureEstimationT fest;
@@ -75,13 +75,13 @@ namespace pcl_practicing {
         fest.setInputNormals(object_normals);
         fest.compute(*object_features);
 
-        PCL_INFO("Object features cloud has %d points\n", (int)object_features->points.size());
+        PCL_INFO("Object features cloud has %d points\n", static_cast<int>(object_features->points.size()));
 
         fest.setInputCloud(scene_cloud);
         fest.setInputNormals(scene_normals);
         fest.compute(*scene_features);
 
-        PCL_INFO("Scene features cloud has %d points\n", (int)scene_features->points.size());
+        PCL_INFO("Scene features cloud has %d points\n", static_cast<int>(scene_features->points.size()));
     }
 
     void AlignmentPrerejective::performAlignment() {
@@ -98,7 +98,7 @@ namespace pcl_practicing {
         align.setMaxCorrespondenceDistance(2.5f * voxel_grid_leaf_size);
         align.setInlierFraction(RansacParameters::INLIER_FRACTION); // 0.25f);
         align.align(*object_aligned);
-        PCL_INFO("SampleConsensusPrerejective alignment has converged %d\n", (int)align.hasConverged());
+        PCL_INFO("SampleConsensusPrerejective alignment has converged %d\n", static_cast<int>(align.hasConverged()));
     }
     void AlignmentPrerejective::getFinalPose() {}
 };
