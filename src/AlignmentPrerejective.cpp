@@ -5,7 +5,6 @@ namespace pcl_practicing {
     AlignmentPrerejective::AlignmentPrerejective() : 
         object_cloud (new PointCloudT),
         scene_cloud (new PointCloudT),
-        object_aligned (new PointCloudT),
         scene_before_downsampling (new PointCloudT),
         scene_normals (new PointNormalCloudT),
         object_normals (new PointNormalCloudT),
@@ -17,8 +16,12 @@ namespace pcl_practicing {
         downsample();
         estimateNormals();
         estimateFeatures();
-        performAlignment();
-        getFinalPose();
+
+        PointCloudT::Ptr object_aligned (new PointCloudT);
+        performAlignment(object_aligned);
+        PCL_INFO("object aligned cloud has %d points\n", static_cast<int>(object_aligned->points.size()));
+
+        // getFinalPose();
     }
     void AlignmentPrerejective::loadScenePointCloud(const std::string& file_path) {
         std::cout << "load scene Point Cloud from file.\n";
@@ -84,23 +87,35 @@ namespace pcl_practicing {
         PCL_INFO("Scene features cloud has %d points\n", static_cast<int>(scene_features->points.size()));
     }
 
-    void AlignmentPrerejective::performAlignment() {
+    void AlignmentPrerejective::performAlignment(const PointCloudT::Ptr& object_aligned) {
         PCL_INFO("Perform alignment");
-        pcl::SampleConsensusPrerejective<PointT, PointT, FeatureT> align;
-        align.setInputSource(object_cloud);
-        align.setSourceFeatures(object_features);
-        align.setInputTarget(scene_cloud);
-        align.setTargetFeatures(scene_features);
-        align.setMaximumIterations(RansacParameters::MAXIMUM_ITERATIONS);
-        align.setNumberOfSamples(RansacParameters::SAMPLES_NUMBER);
-        align.setCorrespondenceRandomness(RansacParameters::CORRESPONDENCE_RANDOMNESS);
-        align.setSimilarityThreshold(RansacParameters::SIMILARITY_THRESHOLD);
-        align.setMaxCorrespondenceDistance(2.5f * voxel_grid_leaf_size);
-        align.setInlierFraction(RansacParameters::INLIER_FRACTION); // 0.25f);
-        align.align(*object_aligned);
-        PCL_INFO("SampleConsensusPrerejective alignment has converged %d\n", static_cast<int>(align.hasConverged()));
+        pcl::SampleConsensusPrerejective<PointT, PointT, FeatureT> alignment;
+        alignment.setInputSource(object_cloud);
+        alignment.setSourceFeatures(object_features);
+        alignment.setInputTarget(scene_cloud);
+        alignment.setTargetFeatures(scene_features);
+        alignment.setMaximumIterations(RansacParameters::MAXIMUM_ITERATIONS);
+        alignment.setNumberOfSamples(RansacParameters::SAMPLES_NUMBER);
+        alignment.setCorrespondenceRandomness(RansacParameters::CORRESPONDENCE_RANDOMNESS);
+        alignment.setSimilarityThreshold(RansacParameters::SIMILARITY_THRESHOLD);
+        alignment.setMaxCorrespondenceDistance(2.5f * voxel_grid_leaf_size);
+        alignment.setInlierFraction(RansacParameters::INLIER_FRACTION); // 0.25f);
+        alignment.align(*object_aligned);
+        PCL_INFO("SampleConsensusPrerejective alignment has converged %d\n", static_cast<int>(alignment.hasConverged()));
+
+        auto result_transformation = alignment.getFinalTransformation();
+
+        pcl::console::print_info ("    | %6.3f %6.3f %6.3f | \n", result_transformation (0,0), result_transformation (0,1), result_transformation (0,2));
+        pcl::console::print_info ("R = | %6.3f %6.3f %6.3f | \n", result_transformation (1,0), result_transformation (1,1), result_transformation (1,2));
+        pcl::console::print_info ("    | %6.3f %6.3f %6.3f | \n", result_transformation (2,0), result_transformation (2,1), result_transformation (2,2));
+        pcl::console::print_info ("\n");
+        pcl::console::print_info ("t = < %0.3f, %0.3f, %0.3f >\n", result_transformation (0,3), result_transformation (1,3), result_transformation (2,3));
+        pcl::console::print_info ("\n");
+        pcl::console::print_info ("Inliers: %i/%i\n", alignment.getInliers().size(), object_cloud->size());
+
     }
-    void AlignmentPrerejective::getFinalPose() {}
+    // void AlignmentPrerejective::getFinalPose() {
+    //     PCL_INFO("Perform alignment");
+        
+    // }
 };
-
-
