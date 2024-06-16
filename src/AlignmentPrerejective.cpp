@@ -97,14 +97,5 @@ namespace pcl_practicing {
         pcl::console::print_info ("Inliers: %i/%i\n", alignment.getInliers().size(), object_cloud->size());
 
     }
-    void AlignmentPrerejective::visualizeResult() {
-        PCL_INFO("Visualize result");
-
-        // Show alignment
-        pcl::visualization::PCLVisualizer visu("Alignment");
-        visu.addPointCloud (scene, ColorHandlerT (scene, 0.0, 255.0, 0.0), "scene");
-        visu.addPointCloud (object_aligned, ColorHandlerT (object_aligned, 0.0, 0.0, 255.0), "object_aligned");
-        visu.spin();  
-    }
     
 };

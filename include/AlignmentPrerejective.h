@@ -111,10 +111,6 @@ namespace pcl_practicing {
          * */
         void performAlignment(const PointCloudT::Ptr& object_aligned);
 
-        /**
-         * @brief Visualize result of alignment
-         * */
-        void visualizeResult();
     };
 
 } // namespace pcl_practicing
