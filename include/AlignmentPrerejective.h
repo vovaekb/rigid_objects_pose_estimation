@@ -1,5 +1,5 @@
 /**
- * @file AlignmentPrerejective.cpp
+ * @file AlignmentPrerejective.h
  * @brief Class for pipeline of finding the alignment pose of a rigid object in a scene 
  */
 
@@ -106,15 +106,15 @@ namespace pcl_practicing {
          * */
         void estimateFeatures();
         /**
-         * @brief Perform alignment of object in scene
+         * @brief Perform alignment of object in scene and get final transformation pose of object in scene
          * @param[in] object_aligned Point cloud of object alignment result
          * */
         void performAlignment(const PointCloudT::Ptr& object_aligned);
 
         /**
-         * @brief Get final transformation pose of object alignment in scene
+         * @brief Visualize result of alignment
          * */
-        void getFinalPose();
+        void visualizeResult();
     };
 
 } // namespace pcl_practicing
