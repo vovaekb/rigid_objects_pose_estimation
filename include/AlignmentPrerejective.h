@@ -69,6 +69,18 @@ namespace pcl_practicing {
          * */
         void align();
 
+        /**
+         * @brief Get features for scene point cloud 
+         * @return Feature descriptors point cloud
+         * */
+        auto getSceneFeatures() const -> FeatureCloudT::Ptr;
+
+        /**
+         * @brief Get features for object point cloud 
+         * @return Feature descriptors point cloud
+         * */
+        auto getObjectFeatures() const -> FeatureCloudT::Ptr;
+
     private:
         /// Leaf size for Voxel Grid downsampling
         float voxel_grid_leaf_size = 0.005f;

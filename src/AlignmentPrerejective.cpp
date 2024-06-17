@@ -97,5 +97,13 @@ namespace pcl_practicing {
         pcl::console::print_info ("Inliers: %i/%i\n", alignment.getInliers().size(), object_cloud->size());
 
     }
+
+    auto AlignmentPrerejective::getSceneFeatures() const -> FeatureCloudT::Ptr {
+        return scene_features;
+    }
+
+    auto AlignmentPrerejective::getObjectFeatures() const -> FeatureCloudT::Ptr {
+        return object_features;
+    }
     
 };
