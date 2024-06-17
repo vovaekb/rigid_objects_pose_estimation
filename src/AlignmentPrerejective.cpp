@@ -11,14 +11,14 @@ namespace pcl_practicing {
         object_features (new FeatureCloudT),
         scene_features (new FeatureCloudT) {}
 
-    void AlignmentPrerejective::align() {
+    Eigen::Matrix4f AlignmentPrerejective::align() {
         downsample();
         estimateNormals();
         estimateFeatures();
 
         PointCloudT::Ptr object_aligned (new PointCloudT);
-        performAlignment(object_aligned);
-
+        auto pose = performAlignment(object_aligned);
+        return pose;
     }
     void AlignmentPrerejective::loadScenePointCloud(const std::string& file_path) {
        
@@ -70,7 +70,7 @@ namespace pcl_practicing {
 
     }
 
-    void AlignmentPrerejective::performAlignment(const PointCloudT::Ptr& object_aligned) {
+    Eigen::Matrix4f AlignmentPrerejective::performAlignment(const PointCloudT::Ptr& object_aligned) {
         PCL_INFO("Perform alignment");
         pcl::SampleConsensusPrerejective<PointT, PointT, FeatureT> alignment;
         alignment.setInputSource(object_cloud);

@@ -66,8 +66,21 @@ namespace pcl_practicing {
 
         /**
          * @brief Start pipeline for finding the alignment pose of a rigid object in a scene
+         * @return Transformation pose
          * */
-        void align();
+        Eigen::Matrix4f align();
+
+        /**
+         * @brief Get point cloud of scene  
+         * @return Point cloud
+         * */
+        auto getScenePointCloud() const -> PointCloudT::Ptr;
+
+        /**
+         * @brief Get point cloud of object  
+         * @return Point cloud
+         * */
+        auto getObjectPointCloud() const -> PointCloudT::Ptr;
 
         /**
          * @brief Get features for scene point cloud 
@@ -120,8 +133,9 @@ namespace pcl_practicing {
         /**
          * @brief Perform alignment of object in scene and get final transformation pose of object in scene
          * @param[in] object_aligned Point cloud of object alignment result
+         * @return Transformation pose
          * */
-        void performAlignment(const PointCloudT::Ptr& object_aligned);
+        Eigen::Matrix4f performAlignment(const PointCloudT::Ptr& object_aligned);
 
     };
 
